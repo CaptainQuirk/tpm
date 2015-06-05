@@ -49,8 +49,8 @@ install_plugin() {
 		echo_message "Already installed \"$plugin_name\""
 	else
 		# plugin wasn't cloned so far - clone it
-		echo_message "Installing \"$plugin_name\""
-		clone_plugin "$plugin" &&
+		echo_message "Installing \"$plugin_name\" through \"$install_strategy\" strategy"
+		fetch_plugin "$plugin" "$install_strategy" &&
 			echo_message "  \"$plugin_name\" download success" ||
 			echo_message "  \"$plugin_name\" download fail"
 	fi
