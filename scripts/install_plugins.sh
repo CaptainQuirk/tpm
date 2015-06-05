@@ -23,6 +23,11 @@ clone_plugin() {
 install_plugin() {
 	local plugin="$1"
 	local plugin_name="$(shared_plugin_name "$plugin")"
+	local install_strategy="$(tmux show-options -gqv @tpm_install_strategy)"
+
+	if [[ -z "$install_strategy" ]]; then
+    install_strategy='clone'
+	fi
 
 	if plugin_already_installed "$plugin"; then
 		# plugin is already installed
