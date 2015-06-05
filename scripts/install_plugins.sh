@@ -9,14 +9,29 @@ clone() {
 	cd $SHARED_TPM_PATH &&
 		GIT_TERMINAL_PROMPT=0 git clone --recursive $plugin
 }
+submodule_add() {
+	local plugin=$1
+	cd $SHARED_TPM_PATH &&
+		GIT_TERMINAL_PROMPT=0 git submodule add $plugin &&
+		git submodule update --init --recursive
+}
 
 # tries cloning:
 # 1. plugin name directly - works if it's a valid git url
 # 2. expands the plugin name to point to a github repo and tries cloning again
-clone_plugin() {
+fetch_plugin() {
 	local plugin=$1
-	clone "$plugin" ||
-		clone "https://git::@github.com/$plugin"
+	local strategy=$2
+
+	if [[ "$strategy" == clone ]]; then
+		clone "$plugin" ||
+			clone "https://git::@github.com/$plugin"
+	elif [[ "$strategy" == submodule ]]; then
+    submodule_add "$plugin" ||
+			submodule_add "https://git::@github.com/$plugin"
+	else
+		echo_message "Unknow strategy $strategy. Valid strategy are clone or submodule"
+	fi
 }
 
 # pull new changes or clone plugin
